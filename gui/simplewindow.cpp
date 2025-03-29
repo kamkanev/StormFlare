@@ -12,6 +12,7 @@
 #include <QApplication>  // For QGuiApplication
 #include <QTimer>
 #include <QMenuBar>
+#include <gui/widgets/canvaswidget.h>
 
 #include "gui/qcanvas.h"
 
@@ -20,22 +21,31 @@ SimpleWindow::SimpleWindow(QWidget *parent)
 {
     setTools();
 
+    //Set Icon
     setWindowTitle(tr("Stormflare"));
     setWindowIcon(QIcon("resources/Logo/logo2STORMFLARE.png"));
     setWindowIconText(tr("Stormflare v0.0.2a"));
+
 
     qbar = new QMenuBar(this);
 
     auto outer = new QVBoxLayout(this);
 
-    //CRashes maybe here
-    QImage qim = SimpleWindow::MatToQPixmap(canvas.getImage());
-    noteLabel->setPixmap(QPixmap::fromImage(qim));
+    //Added canvas image
+    //QImage qim = SimpleWindow::MatToQPixmap(canvas.getImage());
+    noteLabel->setImage(canvas.getImage());
 
     noteLabel->setStyleSheet("border: 1px solid black");
 
 
     outer->addWidget(noteLabel);
+
+    //Test new canvas
+    // auto cWid = new CanvasWidget(this);
+
+    // cWid->setImage(cv::imread("lenna.png"));
+
+    // outer->addWidget(cWid);
 
     // auto noteEdit = new QTextEdit(this);
     // outer->addWidget(noteEdit);

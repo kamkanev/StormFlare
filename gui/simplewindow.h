@@ -82,7 +82,7 @@ private slots:
     void update(){
         st->focus(canvas.getImage());
 
-        noteLabel->setPixmap(QPixmap::fromImage(MatToQPixmap(canvas.getImage())));
+        noteLabel->setImage(canvas.getImage());
         canvas.update();
     }
 

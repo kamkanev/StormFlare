@@ -31,6 +31,7 @@ SOURCES += \
         gui/dialog/newdielog.cpp \
         gui/qcanvas.cpp \
         gui/simplewindow.cpp \
+        gui/widgets/canvaswidget.cpp \
         utils/brush/brush.cpp \
         utils/canvas/canvas.cpp \
         utils/tools/circletool.cpp \
@@ -50,6 +51,7 @@ HEADERS += \
     gui/dialog/newdielog.h \
     gui/qcanvas.h \
     gui/simplewindow.h \
+    gui/widgets/canvaswidget.h \
     utils/brush/brush.h \
     utils/canvas/canvas.h \
     utils/tools/circletool.h \

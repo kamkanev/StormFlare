@@ -1,32 +1,25 @@
-#ifndef QCANVAS_H
-#define QCANVAS_H
+#ifndef CANVASWIDGET_H
+#define CANVASWIDGET_H
 
-#include <QLabel>
-#include <QWidget>
 #include <QGraphicsView>
 #include <QGraphicsPixmapItem>
 #include <QWheelEvent>
 #include <QMouseEvent>
 #include <opencv2/opencv.hpp>
 
-class QCanvas : public QGraphicsView
-{
+class CanvasWidget : public QGraphicsView {
     Q_OBJECT
-public:
-    explicit QCanvas(QWidget *parent = nullptr);
-    void setImage(const cv::Mat &image);
 
-signals:
-    void mousePressed(QMouseEvent *event);
-    void mouseMoved(QMouseEvent *event);
-    void mouseReleased(QMouseEvent *event);
+public:
+    explicit CanvasWidget(QWidget *parent = nullptr);
+    void setImage(const cv::Mat &image);
+    cv::Mat getImage();
 
 protected:
     void wheelEvent(QWheelEvent *event) override;        // Zooming
     void mousePressEvent(QMouseEvent *event) override;   // Start dragging
     void mouseMoveEvent(QMouseEvent *event) override;    // Dragging
     void mouseReleaseEvent(QMouseEvent *event) override; // Stop dragging
-
 
 private:
     QGraphicsScene *scene;
@@ -35,4 +28,4 @@ private:
     QPoint lastMousePos;
 };
 
-#endif // QCANVAS_H
+#endif // CANVASWIDGET_H
