@@ -152,7 +152,7 @@ private slots:
 
         QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
                                                         "",
-                                                        "Images (*.png *.xpm *.jpg)");
+                                                        "PNG Images (*.png);;JPG Images (*.jpg);;XMP Images (*.xpm)");
         //TODO: check if fileName contains corect sufix (.png e.g.)
         //Now error is given and closes everything - to fix
 

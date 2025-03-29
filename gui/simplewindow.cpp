@@ -20,14 +20,15 @@ SimpleWindow::SimpleWindow(QWidget *parent)
 {
     setTools();
 
-    setWindowTitle(tr("Stormflare v0.0.1a"));
-    setWindowIcon(QIcon("resources/Logo/StormflareLogo.png"));
-    setWindowIconText(tr("Stormflare v0.0.1a"));
+    setWindowTitle(tr("Stormflare"));
+    setWindowIcon(QIcon("resources/Logo/logo2STORMFLARE.png"));
+    setWindowIconText(tr("Stormflare v0.0.2a"));
 
     qbar = new QMenuBar(this);
 
     auto outer = new QVBoxLayout(this);
 
+    //CRashes maybe here
     QImage qim = SimpleWindow::MatToQPixmap(canvas.getImage());
     noteLabel->setPixmap(QPixmap::fromImage(qim));
 
@@ -54,12 +55,11 @@ SimpleWindow::SimpleWindow(QWidget *parent)
         clrPick->show();
     });
 
-
-
     auto inner = new QHBoxLayout;
     outer->addLayout(inner);
 
     inner->addLayout(btncols);
+
 
     // auto clearBtn = new QPushButton("Clear");
     // inner->addWidget(clearBtn);
@@ -67,12 +67,15 @@ SimpleWindow::SimpleWindow(QWidget *parent)
     // auto saveBtn = new QPushButton("Save");
     // inner->addWidget(saveBtn);
     createActions();
-    createMenus();
+
+
+    createMenus(); //<- problem
 
 
     QTimer *timer = new QTimer(noteLabel);
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
     timer->start(10);
+
 
 }
 
@@ -107,13 +110,16 @@ void SimpleWindow::createMenus(){
     exitAct->setStatusTip(tr("Exit"));
     connect(exitAct, &QAction::triggered, this, &SimpleWindow::exitWindow);
 
+
     fileMenu->addAction(newAct);
-    fileMenu->addAction(openAct);
+    // fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
+
     qbar->addMenu(fileMenu);
+
 
     editMenu = new QMenu(tr("&Edit"), qbar);
 

@@ -1,14 +1,9 @@
 // #include "utils/filters/imagefilter.h"
-#include <iostream>
+// #include <iostream>
 // #include <opencv2/opencv.hpp>
 //#include "mainwindow.h"
 // #include <cmath>
 // #include "utils/brush/brush.h"
-#include "utils/canvas/canvas.h"
-#include "utils/tools/freedrawing.h"
-#include "utils/tools/rectdrawing.h"
-#include "utils/tools/circletool.h"
-#include "utils/tools/linetool.h"
 
 #include "gui/simplewindow.h"
 
@@ -18,16 +13,6 @@
 using namespace cv;
 using namespace std;
 
-bool is_pressed = false;
-
-Canvas canvas = Canvas(500, 500, Scalar(255, 255, 255));
-FreeDrawing fd = FreeDrawing(true);
-RectDrawing rd = RectDrawing(true);
-CircleTool cl = CircleTool(true);
-LineTool lt = LineTool(true);
-
-ShapeTool* st = &fd;
-
 // void CallbackMouse (int event, int x, int y, int flags, void* userdata);
 
 int main(int argc, char *argv[])
@@ -35,45 +20,29 @@ int main(int argc, char *argv[])
 
     // Check if the image is created
     // successfully or not
-    if (!canvas.getImage().data) {
-        cout << "Could not open or "
-                  << "find the image\n";
+    // if (!canvas.getImage().data) {
+    //     cout << "Could not open or "
+    //               << "find the image\n";
 
-        return 0;
-    }
-
-    //imwrite("/home/kamen/git/Cpp-paint/lenna2.png", image);
-    // Show our image inside a window
-
-    // int fWid = 600, fHei = 1000;
-    // cout<<"Enter Width and Height:" << endl;
-    // cout<<"Width: ";
-    // cin>> fWid;
-    // cout<<"Height: ";
-    // cin>> fHei;
-
-    // drawimage = Mat(fHei, fWid, CV_8UC3,
-    //                 Scalar(255, 255, 255));
-    // drawimage.copyTo(image);
-
-    //WINDOW setup
-    // String windowTitle = "Paint";
-    // namedWindow(windowTitle, WINDOW_NORMAL);
-    // setMouseCallback(windowTitle, CallbackMouse);//&br1
-
-
-    //create tracker
-    //int tr1 = createTrackbar("PointTop", windowTitle, &pb.x, 500);
-    //int tr2 = createTrackbar("Brush Size", windowTitle, st->getBrush().sizePointer, 100);
-
-    //create buttons
-    //createButton("Make Square", OnSqrButtonClick, NULL, 0, 0);
-    //cout<< getBuildInformation() << endl;
+    //     return 0;
+    // }
 
     //Q Apllication
     QApplication app(argc, argv);
+
+    // Load the splash screen image
+    QPixmap splashImage("resources/SlashScreen/phoe_load2.jpg");  // Use a resource file or absolute path
+    QSplashScreen splash(splashImage);
+    splash.setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    splash.show();
+
     SimpleWindow window;//(canvas.getImage());
-    window.show();
+
+
+    QTimer::singleShot(3000, [&]() { // 3-second delay
+        splash.close();
+        window.show();
+    });
 
     // char key = 0;
 

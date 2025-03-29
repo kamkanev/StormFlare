@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/load_screen">
+        <file>phoe_load.jpeg</file>
+    </qresource>
+</RCC>
