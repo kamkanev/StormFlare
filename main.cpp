@@ -31,15 +31,29 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     // Load the splash screen image
-    QPixmap splashImage("resources/SlashScreen/phoe_load2.jpg");  // Use a resource file or absolute path
+    QPixmap splashImage("resources/SlashScreen/phoe_load3.jpg");  // Use a resource file or absolute path
     QSplashScreen splash(splashImage);
     splash.setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+
+    // Create a progress bar
+    QProgressBar progressBar(&splash);
+    progressBar.setGeometry(10, splash.height() - 30, splash.width() - 20, 20);
+    progressBar.setRange(0, 100);
+    progressBar.show();
+
     splash.show();
 
     SimpleWindow window;//(canvas.getImage());
 
+    // Simulate loading steps
+    for (int i = 0; i <= 100; i += 10) {
+        progressBar.setValue(i);
+        app.processEvents();  // Keep UI responsive
+        QThread::msleep(200);
+    }
 
-    QTimer::singleShot(3000, [&]() { // 3-second delay
+
+    QTimer::singleShot(1000, [&]() { // 1-second delay
         splash.close();
         window.show();
     });

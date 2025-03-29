@@ -20,7 +20,7 @@
 #include <QMenuBar>
 #include <QFileDialog>
 
-#include <gui/qcanvas.h>
+#include "gui/qcanvas.h"
 #include "include/QtColorWidgets/ColorDialog"
 
 class SimpleWindow : public QWidget

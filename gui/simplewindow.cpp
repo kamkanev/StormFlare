@@ -12,7 +12,6 @@
 #include <QApplication>  // For QGuiApplication
 #include <QTimer>
 #include <QMenuBar>
-#include <gui/widgets/canvaswidget.h>
 
 #include "gui/qcanvas.h"
 
