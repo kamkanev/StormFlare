@@ -31,9 +31,11 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     // Load the splash screen image
-    QPixmap splashImage("resources/SlashScreen/phoe_load3.jpg");  // Use a resource file or absolute path
-    QSplashScreen splash(splashImage);
+    QPixmap loadImage("resources/SlashScreen/phoe_load4.png");  // Use a resource file or absolute path
+    // QPixmap splashImage = loadImage.scaled(600, 600);
+    QSplashScreen splash(loadImage.scaled(512, 512));
     splash.setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    // splash.resize(QSize(600, 600));
 
     // Create a progress bar
     QProgressBar progressBar(&splash);
