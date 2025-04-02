@@ -22,6 +22,7 @@
 
 #include "gui/qcanvas.h"
 #include "include/QtColorWidgets/ColorDialog"
+#include "gui/dialog/newdialog.h"
 
 class SimpleWindow : public QWidget
 {
@@ -143,8 +144,16 @@ private slots:
     }
 
     void newFile(){
-        //activate dialog window
-        canvas = Canvas(500, 500, cv::Scalar(255, 255, 255));
+
+        NewDialog dialog(this);
+        if (dialog.exec() == QDialog::Accepted) {
+            int width = dialog.getWidth();
+            int height = dialog.getHeight();
+            qDebug() << "User selected width:" << width << "height:" << height;
+            canvas = Canvas(height, width, cv::Scalar(255, 255, 255));
+        }
+        //If dialog is closed / not accepted didn't do it
+
     }
 
     void saveFile(){

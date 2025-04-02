@@ -23,8 +23,9 @@ SimpleWindow::SimpleWindow(QWidget *parent)
     //Set Icon
     setWindowTitle(tr("Stormflare"));
     setWindowIcon(QIcon("resources/Logo/logo2STORMFLARE.png"));
-    setWindowIconText(tr("Stormflare v0.0.2a"));
+    setWindowIconText(tr("Stormflare v0.0.3a"));
 
+    // this->move(screen()->availableGeometry().center());
 
     qbar = new QMenuBar(this);
 
