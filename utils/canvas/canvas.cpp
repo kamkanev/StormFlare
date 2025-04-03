@@ -9,6 +9,13 @@ Canvas::Canvas(int weight, int height, Scalar color) {
     baseimage.copyTo(drawimage);
 }
 
+Canvas::Canvas(Mat image){
+    baseimage = image;
+    baseimage.copyTo(image);
+    baseimage.copyTo(drawimage);
+
+}
+
 void Canvas::addToHistory(P_Element* element){
     if(!future.empty()){
         future = std::stack<P_Element*>();

@@ -23,7 +23,7 @@ SimpleWindow::SimpleWindow(QWidget *parent)
     //Set Icon
     setWindowTitle(tr("Stormflare"));
     setWindowIcon(QIcon("resources/Logo/logo2STORMFLARE.png"));
-    setWindowIconText(tr("Stormflare v0.1.2a"));
+    setWindowIconText(tr("Stormflare v0.1.3a"));
 
     // this->move(screen()->availableGeometry().center());
 
@@ -120,13 +120,20 @@ void SimpleWindow::createMenus(){
     newAct->setStatusTip(tr("Create a new file"));
     connect(newAct, &QAction::triggered, this, &SimpleWindow::newFile);
 
+    openAct = new QAction(QIcon::fromTheme(QIcon::ThemeIcon::DocumentOpen),
+                         tr("&Open"), this);
+    openAct->setShortcuts(QKeySequence::Open);
+    openAct->setStatusTip(tr("Open a file"));
+    connect(openAct, &QAction::triggered, this, &SimpleWindow::openFile);
+
+
     saveAct = new QAction(QIcon::fromTheme(QIcon::ThemeIcon::DocumentSave),
                          tr("&Save"), this);
     saveAct->setShortcuts(QKeySequence::Save);
     saveAct->setStatusTip(tr("Save current file"));
     connect(saveAct, &QAction::triggered, this, &SimpleWindow::saveFile);
 
-    saveAsAct = new QAction(QIcon::fromTheme(QIcon::ThemeIcon::DocumentSave),
+    saveAsAct = new QAction(QIcon::fromTheme(QIcon::ThemeIcon::DocumentSaveAs),
                           tr("&Save As"), this);
     saveAsAct->setShortcuts(QKeySequence::SaveAs);
     saveAsAct->setStatusTip(tr("Save current file with another name!"));
@@ -141,7 +148,7 @@ void SimpleWindow::createMenus(){
 
 
     fileMenu->addAction(newAct);
-    // fileMenu->addAction(openAct);
+    fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
     fileMenu->addSeparator();

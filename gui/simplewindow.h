@@ -233,6 +233,34 @@ private slots:
 
     }
 
+    void openFile(){
+
+        QFileDialog dialog(this);
+        dialog.setAcceptMode(QFileDialog::AcceptOpen);
+        dialog.setNameFilters({"PNG Images (*.png)", "JPG Images (*.jpg)", "XMP Images (*.xpm)"});
+
+        if (dialog.exec() == QDialog::Accepted) {
+            fileName = dialog.selectedFiles().first();  // Get the chosen file path
+            QString selectedFilter = dialog.selectedNameFilter();  // Get the selected file type
+
+            //For now checks what the file ends with
+            if (fileName.endsWith(".png", Qt::CaseInsensitive) ||
+                fileName.endsWith(".jpg", Qt::CaseInsensitive) ||
+                fileName.endsWith(".xpm", Qt::CaseInsensitive)) {
+
+
+                // qDebug() << "Opening from:" << fileName;
+                cv::Mat oImg = cv::imread(fileName.toStdString());
+                canvas = Canvas(oImg);
+
+                fileLabel->setText(fileName);
+            }
+
+
+        }
+
+    }
+
 
 
     void exitWindow(){

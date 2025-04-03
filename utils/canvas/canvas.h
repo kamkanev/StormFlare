@@ -9,6 +9,7 @@ class Canvas
 {
 public:
     Canvas(int weight, int height, cv::Scalar color);
+    Canvas(cv::Mat image);
 
     cv::Mat getImage();
     cv::Mat getDrawImage();
