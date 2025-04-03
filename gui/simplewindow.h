@@ -126,20 +126,20 @@ private slots:
 
     }
 
-    void onMousePressed(QMouseEvent *event) {
-        st->updateTool(event->pos().x(), event->pos().y());
+    void onMousePressedPaint(QPoint event) {
+        st->updateTool(event.x(), event.y());
         // qDebug() << "Mouse Pressed at:" << st->getBrush().getMouse().x << " , " << st->getBrush().getMouse().y;
 
     }
 
-    void onMouseMoved(QMouseEvent *event) {
+    void onMouseMovedPaint(QPoint event) {
         // qDebug() << "Mouse Moved to:" << event->pos();
-        st->updateDraw(canvas.getDrawImage(), event->pos().x(), event->pos().y());
+        st->updateDraw(canvas.getDrawImage(), event.x(), event.y());
     }
 
-    void onMouseReleased(QMouseEvent *event) {
+    void onMouseReleasedPaint(QPoint event) {
         // qDebug() << "Mouse Released at:" << event->pos();
-        canvas.addToHistory(st->draw(canvas.getDrawImage(), event->pos().x(), event->pos().y()));
+        canvas.addToHistory(st->draw(canvas.getDrawImage(), event.x(), event.y()));
         st->updateTool(-1, -1);
     }
 

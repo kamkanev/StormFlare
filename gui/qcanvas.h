@@ -17,9 +17,9 @@ public:
     void setImage(const cv::Mat &image);
 
 signals:
-    void mousePressed(QMouseEvent *event);
-    void mouseMoved(QMouseEvent *event);
-    void mouseReleased(QMouseEvent *event);
+    void mousePressedPaint(QPoint event);
+    void mouseMovedPaint(QPoint event);
+    void mouseReleasedPaint(QPoint event);
 
 protected:
     void wheelEvent(QWheelEvent *event) override;        // Zooming

@@ -39,7 +39,9 @@ void QCanvas::mousePressEvent(QMouseEvent *event) {
         lastMousePos = event->pos();
         setCursor(Qt::ClosedHandCursor); // Change cursor to indicate panning
     } else if (event->button() == Qt::LeftButton) {
-        emit mousePressed(event);
+
+        QPointF scenePoint = mapToScene(event->pos());
+        emit mousePressedPaint(scenePoint.toPoint());
     }
 }
 
@@ -49,7 +51,9 @@ void QCanvas::mouseMoveEvent(QMouseEvent *event) {
         translate(delta.x(), delta.y());
         lastMousePos = event->pos();
     }else{
-        emit mouseMoved(event);
+
+        QPointF scenePoint = mapToScene(event->pos());
+        emit mouseMovedPaint(scenePoint.toPoint());
     }
 
 }
@@ -59,6 +63,8 @@ void QCanvas::mouseReleaseEvent(QMouseEvent *event) {
         isPanning = false;
         setCursor(Qt::ArrowCursor); // Restore normal cursor
     } else if (event->button() == Qt::LeftButton) {
-        emit mouseReleased(event);
+
+        QPointF scenePoint = mapToScene(event->pos());
+        emit mouseReleasedPaint(scenePoint.toPoint());
     }
 }

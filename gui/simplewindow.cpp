@@ -35,7 +35,7 @@ SimpleWindow::SimpleWindow(QWidget *parent)
     //QImage qim = SimpleWindow::MatToQPixmap(canvas.getImage());
     noteLabel->setImage(canvas.getImage());
 
-    noteLabel->setStyleSheet("border: 1px solid black");
+    noteLabel->setStyleSheet("border: 1px solid black; background-color: #767676;");
 
 
     outer->addWidget(noteLabel);
@@ -153,9 +153,9 @@ void SimpleWindow::createMenus(){
 }
 
 void SimpleWindow::createActions(){
-    connect(noteLabel, &QCanvas::mousePressed, this, &SimpleWindow::onMousePressed);
-    connect(noteLabel, &QCanvas::mouseMoved, this, &SimpleWindow::onMouseMoved);
-    connect(noteLabel, &QCanvas::mouseReleased, this, &SimpleWindow::onMouseReleased);
+    connect(noteLabel, &QCanvas::mousePressedPaint, this, &SimpleWindow::onMousePressedPaint);
+    connect(noteLabel, &QCanvas::mouseMovedPaint, this, &SimpleWindow::onMouseMovedPaint);
+    connect(noteLabel, &QCanvas::mouseReleasedPaint, this, &SimpleWindow::onMouseReleasedPaint);
 
     connect(fdBtn, &QPushButton::clicked, this, &SimpleWindow::changeTool);
     connect(rdBtn, &QPushButton::clicked, this, &SimpleWindow::changeTool);
