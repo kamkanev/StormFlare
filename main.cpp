@@ -36,7 +36,11 @@ int main(int argc, char *argv[])
     progressBar.setRange(0, 100);
     progressBar.show();
 
-    splash.move(splash.screen()->availableGeometry().center());
+    // splash.move(splash.screen()->availableGeometry().center());
+    QRect screenGeometry = QGuiApplication::primaryScreen()->geometry();
+    int x = (screenGeometry.width() - splash.width()) / 2;
+    int y = (screenGeometry.height() - splash.height()) / 2;
+    splash.move(x, y);
     // splash.move(screen()->availableGeometry().center());
     splash.show();
 
