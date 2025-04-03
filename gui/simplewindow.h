@@ -33,10 +33,11 @@ public:
 
 protected:
     Canvas canvas = Canvas(500, 500, cv::Scalar(255, 255, 255));
-    QCanvas* noteLabel = new QCanvas(this);
+    QCanvas* qcanvas = new QCanvas(this);
 
     Brush* brush = new Brush();
 
+    //tools
     FreeDrawing fd = FreeDrawing(true);
     RectDrawing rd = RectDrawing(true);
     CircleTool cl = CircleTool(true);
@@ -52,24 +53,28 @@ protected:
     // QShortcut *scUndo = new QShortcut(QKeySequence("Ctrl+Z"), this);
     // QShortcut *scRedo = new QShortcut(QKeySequence("Ctrl+Y"), this);
 
+    //tools buttons
     QPushButton* fdBtn = new QPushButton("Free");
     QPushButton* rdBtn = new QPushButton("Rect");
     QPushButton* clBtn = new QPushButton("Circle");
     QPushButton* ltBtn = new QPushButton("Line");
     QPushButton* rgbBtn = new QPushButton("RGB");
 
-
+    //color dialog
     color_widgets::ColorDialog* clrPick = new color_widgets::ColorDialog(this);
 
+    //menus and bar
     QMenuBar *qbar;
 
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *helpMenu;
 
+    //sub menu actions
     QAction *newAct;
     QAction *openAct;
     QAction *saveAct;
+    QAction *saveAsAct;
     QAction *exitAct;
     QAction *undoAct;
     QAction *redoAct;
@@ -79,11 +84,15 @@ private:
     void createActions();
     void setTools();
 
+    QString fileName = NULL;
+
+    QLabel* fileLabel = new QLabel();
+
 private slots:
     void update(){
         st->focus(canvas.getImage());
 
-        noteLabel->setImage(canvas.getImage());
+        qcanvas->setImage(canvas.getImage());
         canvas.update();
     }
 
@@ -159,12 +168,48 @@ private slots:
     void saveFile(){
         //dialog where to save
 
+        if(fileName.isNull()) {
+            QFileDialog dialog(this);
+            dialog.setAcceptMode(QFileDialog::AcceptSave);
+            dialog.setNameFilters({"PNG Images (*.png)", "JPG Images (*.jpg)", "XMP Images (*.xpm)"});
+
+            if (dialog.exec() == QDialog::Accepted) {
+                fileName = dialog.selectedFiles().first();  // Get the chosen file path
+                QString selectedFilter = dialog.selectedNameFilter();  // Get the selected file type
+
+                if (!fileName.endsWith(".png", Qt::CaseInsensitive) &&
+                    !fileName.endsWith(".jpg", Qt::CaseInsensitive) &&
+                    !fileName.endsWith(".xpm", Qt::CaseInsensitive)) {
+
+                    if (selectedFilter.contains("*.png")) {
+                        fileName += ".png";
+                    } else if (selectedFilter.contains("*.jpg")) {
+                        fileName += ".jpg";
+                    } else if (selectedFilter.contains("*.xpm")) {
+                        fileName += ".xpm";
+                    }
+                }
+
+                // qDebug() << "Saving to:" << fileName;
+                imwrite(fileName.toStdString(), canvas.getImage());
+
+                fileLabel->setText(fileName);
+            }
+
+        }else {
+            imwrite(fileName.toStdString(), canvas.getImage());
+        }
+
+    }
+
+    void saveAsFile(){
+
         QFileDialog dialog(this);
         dialog.setAcceptMode(QFileDialog::AcceptSave);
         dialog.setNameFilters({"PNG Images (*.png)", "JPG Images (*.jpg)", "XMP Images (*.xpm)"});
 
         if (dialog.exec() == QDialog::Accepted) {
-            QString fileName = dialog.selectedFiles().first();  // Get the chosen file path
+            fileName = dialog.selectedFiles().first();  // Get the chosen file path
             QString selectedFilter = dialog.selectedNameFilter();  // Get the selected file type
 
             if (!fileName.endsWith(".png", Qt::CaseInsensitive) &&
@@ -182,9 +227,13 @@ private slots:
 
             // qDebug() << "Saving to:" << fileName;
             imwrite(fileName.toStdString(), canvas.getImage());
+
+            fileLabel->setText(fileName);
         }
 
     }
+
+
 
     void exitWindow(){
         this->close();

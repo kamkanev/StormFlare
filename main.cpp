@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 
     QTimer::singleShot(1000, [&]() { // 1-second delay
         splash.close();
-        window.show();
+        window.showMaximized();
     });
 
 

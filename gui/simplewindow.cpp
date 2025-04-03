@@ -23,7 +23,7 @@ SimpleWindow::SimpleWindow(QWidget *parent)
     //Set Icon
     setWindowTitle(tr("Stormflare"));
     setWindowIcon(QIcon("resources/Logo/logo2STORMFLARE.png"));
-    setWindowIconText(tr("Stormflare v0.0.3a"));
+    setWindowIconText(tr("Stormflare v0.1.2a"));
 
     // this->move(screen()->availableGeometry().center());
 
@@ -31,14 +31,26 @@ SimpleWindow::SimpleWindow(QWidget *parent)
 
     auto outer = new QVBoxLayout(this);
 
+    auto endl = new QLabel("");
+
+    outer->addWidget(endl);
+
+    if(fileName.isNull()){
+        fileLabel->setText(tr("untitled"));
+    }else{
+        fileLabel->setText(fileName);
+    }
+
+    outer->addWidget(fileLabel);
+
+
     //Added canvas image
     //QImage qim = SimpleWindow::MatToQPixmap(canvas.getImage());
-    noteLabel->setImage(canvas.getImage());
+    qcanvas->setImage(canvas.getImage());
 
-    noteLabel->setStyleSheet("border: 1px solid black; background-color: #767676;");
+    qcanvas->setStyleSheet("border: 1px solid black; background-color: #767676;");
 
-
-    outer->addWidget(noteLabel);
+    outer->addWidget(qcanvas);
 
     //Test new canvas
     // auto cWid = new CanvasWidget(this);
@@ -82,7 +94,7 @@ SimpleWindow::SimpleWindow(QWidget *parent)
     createMenus(); //<- problem
 
 
-    QTimer *timer = new QTimer(noteLabel);
+    QTimer *timer = new QTimer(qcanvas);
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
     timer->start(10);
 
@@ -114,6 +126,13 @@ void SimpleWindow::createMenus(){
     saveAct->setStatusTip(tr("Save current file"));
     connect(saveAct, &QAction::triggered, this, &SimpleWindow::saveFile);
 
+    saveAsAct = new QAction(QIcon::fromTheme(QIcon::ThemeIcon::DocumentSave),
+                          tr("&Save As"), this);
+    saveAsAct->setShortcuts(QKeySequence::SaveAs);
+    saveAsAct->setStatusTip(tr("Save current file with another name!"));
+    connect(saveAsAct, &QAction::triggered, this, &SimpleWindow::saveAsFile);
+
+
     exitAct = new QAction(QIcon::fromTheme(QIcon::ThemeIcon::WindowClose),
                           tr("&Exit"), this);
     exitAct->setShortcuts(QKeySequence::Close);
@@ -124,6 +143,7 @@ void SimpleWindow::createMenus(){
     fileMenu->addAction(newAct);
     // fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
+    fileMenu->addAction(saveAsAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
@@ -153,9 +173,9 @@ void SimpleWindow::createMenus(){
 }
 
 void SimpleWindow::createActions(){
-    connect(noteLabel, &QCanvas::mousePressedPaint, this, &SimpleWindow::onMousePressedPaint);
-    connect(noteLabel, &QCanvas::mouseMovedPaint, this, &SimpleWindow::onMouseMovedPaint);
-    connect(noteLabel, &QCanvas::mouseReleasedPaint, this, &SimpleWindow::onMouseReleasedPaint);
+    connect(qcanvas, &QCanvas::mousePressedPaint, this, &SimpleWindow::onMousePressedPaint);
+    connect(qcanvas, &QCanvas::mouseMovedPaint, this, &SimpleWindow::onMouseMovedPaint);
+    connect(qcanvas, &QCanvas::mouseReleasedPaint, this, &SimpleWindow::onMouseReleasedPaint);
 
     connect(fdBtn, &QPushButton::clicked, this, &SimpleWindow::changeTool);
     connect(rdBtn, &QPushButton::clicked, this, &SimpleWindow::changeTool);
