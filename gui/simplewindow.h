@@ -159,13 +159,28 @@ private slots:
     void saveFile(){
         //dialog where to save
 
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
-                                                        "",
-                                                        "PNG Images (*.png);;JPG Images (*.jpg);;XMP Images (*.xpm)");
-        //TODO: check if fileName contains corect sufix (.png e.g.)
-        //Now error is given and closes everything - to fix
+        QFileDialog dialog(this);
+        dialog.setAcceptMode(QFileDialog::AcceptSave);
+        dialog.setNameFilters({"PNG Images (*.png)", "JPG Images (*.jpg)", "XMP Images (*.xpm)"});
 
-        if(!fileName.isNull() && !fileName.isEmpty()){
+        if (dialog.exec() == QDialog::Accepted) {
+            QString fileName = dialog.selectedFiles().first();  // Get the chosen file path
+            QString selectedFilter = dialog.selectedNameFilter();  // Get the selected file type
+
+            if (!fileName.endsWith(".png", Qt::CaseInsensitive) &&
+                !fileName.endsWith(".jpg", Qt::CaseInsensitive) &&
+                !fileName.endsWith(".xpm", Qt::CaseInsensitive)) {
+
+                if (selectedFilter.contains("*.png")) {
+                    fileName += ".png";
+                } else if (selectedFilter.contains("*.jpg")) {
+                    fileName += ".jpg";
+                } else if (selectedFilter.contains("*.xpm")) {
+                    fileName += ".xpm";
+                }
+            }
+
+            // qDebug() << "Saving to:" << fileName;
             imwrite(fileName.toStdString(), canvas.getImage());
         }
 

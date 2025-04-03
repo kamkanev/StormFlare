@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
     progressBar.setRange(0, 100);
     progressBar.show();
 
+    splash.move(splash.screen()->availableGeometry().center());
     // splash.move(screen()->availableGeometry().center());
     splash.show();
 
