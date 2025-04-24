@@ -60,6 +60,9 @@ protected:
     QPushButton* ltBtn = new QPushButton("Line");
     QPushButton* rgbBtn = new QPushButton("RGB");
 
+    //brush stuff
+    QSpinBox* sizeSpin;
+
     //color dialog
     color_widgets::ColorDialog* clrPick = new color_widgets::ColorDialog(this);
 
@@ -102,6 +105,10 @@ private slots:
 
     void redo(){
         canvas.redo();
+    }
+
+    void setBrushSize(int newSize){
+        brush->setSize(newSize);
     }
 
     void changeColor(QColor color){

@@ -23,7 +23,7 @@ SimpleWindow::SimpleWindow(QWidget *parent)
     //Set Icon
     setWindowTitle(tr("Stormflare"));
     setWindowIcon(QIcon("resources/Logo/logo2STORMFLARE.png"));
-    setWindowIconText(tr("Stormflare v0.1.3a"));
+    setWindowIconText(tr("Stormflare v0.2.0"));
 
     // this->move(screen()->availableGeometry().center());
 
@@ -61,6 +61,19 @@ SimpleWindow::SimpleWindow(QWidget *parent)
 
     // auto noteEdit = new QTextEdit(this);
     // outer->addWidget(noteEdit);
+
+    QVBoxLayout *layoutB = new QVBoxLayout();
+    QLabel *labelSize = new QLabel("Brush Size:", this);
+    sizeSpin = new QSpinBox(this);
+    sizeSpin->setMaximumWidth(100);
+    sizeSpin->setRange(1, 100);
+    sizeSpin->setValue(brush->getSize());
+
+
+    layoutB->addWidget(labelSize);
+    layoutB->addWidget(sizeSpin);
+
+
     auto btncols = new QVBoxLayout;
     auto drawbtns = new QHBoxLayout;
     btncols->addLayout(drawbtns);
@@ -81,6 +94,8 @@ SimpleWindow::SimpleWindow(QWidget *parent)
     outer->addLayout(inner);
 
     inner->addLayout(btncols);
+
+    inner->addLayout(layoutB);
 
 
     // auto clearBtn = new QPushButton("Clear");
@@ -192,6 +207,8 @@ void SimpleWindow::createActions(){
 
     // connect(scRedo, SIGNAL(activated()), this, SLOT(redo()));
     // connect(scUndo, SIGNAL(activated()), this, SLOT(undo()));
+
+    connect(sizeSpin, &QSpinBox::valueChanged, this, &SimpleWindow::setBrushSize);
 }
 
 QImage SimpleWindow::MatToQPixmap(const cv::Mat &image) {
