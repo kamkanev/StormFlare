@@ -22,7 +22,7 @@ SimpleWindow::SimpleWindow(QWidget *parent)
 
     //Set Icon
     setWindowTitle(tr("Stormflare"));
-    setWindowIcon(QIcon("resources/Logo/logo2STORMFLARE.png"));
+    setWindowIcon(QIcon(":/Logo/logo2STORMFLARE.png"));
     setWindowIconText(tr("Stormflare v0.2.0"));
 
     // this->move(screen()->availableGeometry().center());
@@ -129,33 +129,33 @@ void SimpleWindow::createMenus(){
 
     fileMenu = new QMenu(tr("&File"), qbar);
 
-    newAct = new QAction(QIcon::fromTheme(QIcon::ThemeIcon::DocumentNew),
+    newAct = new QAction(QIcon::fromTheme("document-new", QIcon(":/icons/new.svg")),
                          tr("&New"), this);
     newAct->setShortcuts(QKeySequence::New);
     newAct->setStatusTip(tr("Create a new file"));
     connect(newAct, &QAction::triggered, this, &SimpleWindow::newFile);
 
-    openAct = new QAction(QIcon::fromTheme(QIcon::ThemeIcon::DocumentOpen),
+    openAct = new QAction(QIcon::fromTheme("document-open", QIcon(":/icons/open.svg")),
                          tr("&Open"), this);
     openAct->setShortcuts(QKeySequence::Open);
     openAct->setStatusTip(tr("Open a file"));
     connect(openAct, &QAction::triggered, this, &SimpleWindow::openFile);
 
 
-    saveAct = new QAction(QIcon::fromTheme(QIcon::ThemeIcon::DocumentSave),
+    saveAct = new QAction(QIcon::fromTheme("document-save", QIcon(":/icons/save.svg")),
                          tr("&Save"), this);
     saveAct->setShortcuts(QKeySequence::Save);
     saveAct->setStatusTip(tr("Save current file"));
     connect(saveAct, &QAction::triggered, this, &SimpleWindow::saveFile);
 
-    saveAsAct = new QAction(QIcon::fromTheme(QIcon::ThemeIcon::DocumentSaveAs),
+    saveAsAct = new QAction(QIcon::fromTheme("document-save-as", QIcon(":/icons/save-as.svg")),
                           tr("&Save As"), this);
     saveAsAct->setShortcuts(QKeySequence::SaveAs);
     saveAsAct->setStatusTip(tr("Save current file with another name!"));
     connect(saveAsAct, &QAction::triggered, this, &SimpleWindow::saveAsFile);
 
 
-    exitAct = new QAction(QIcon::fromTheme(QIcon::ThemeIcon::WindowClose),
+    exitAct = new QAction(QIcon::fromTheme("window-close", QIcon(":/icons/close.svg")),
                           tr("&Exit"), this);
     exitAct->setShortcuts(QKeySequence::Close);
     exitAct->setStatusTip(tr("Exit"));
@@ -175,13 +175,13 @@ void SimpleWindow::createMenus(){
 
     editMenu = new QMenu(tr("&Edit"), qbar);
 
-    undoAct = new QAction(QIcon::fromTheme(QIcon::ThemeIcon::EditUndo),
+    undoAct = new QAction(QIcon::fromTheme("edit-undo", QIcon(":/icons/undo.svg")),
                          tr("&Undo"), this);
     undoAct->setShortcuts(QKeySequence::Undo);
     undoAct->setStatusTip(tr("Undo an action"));
     connect(undoAct, &QAction::triggered, this, &SimpleWindow::undo);
 
-    redoAct = new QAction(QIcon::fromTheme(QIcon::ThemeIcon::EditRedo),
+    redoAct = new QAction(QIcon::fromTheme("edit-redo", QIcon(":/icons/redo.svg")),
                          tr("&Redo"), this);
     redoAct->setShortcuts(QKeySequence::Redo);
     redoAct->setStatusTip(tr("Redo an action"));
@@ -208,7 +208,7 @@ void SimpleWindow::createActions(){
     // connect(scRedo, SIGNAL(activated()), this, SLOT(redo()));
     // connect(scUndo, SIGNAL(activated()), this, SLOT(undo()));
 
-    connect(sizeSpin, &QSpinBox::valueChanged, this, &SimpleWindow::setBrushSize);
+    connect(sizeSpin, QOverload<int>::of(&QSpinBox::valueChanged), this, &SimpleWindow::setBrushSize);
 }
 
 QImage SimpleWindow::MatToQPixmap(const cv::Mat &image) {
@@ -250,4 +250,186 @@ QImage SimpleWindow::MatToQPixmap(const cv::Mat &image) {
     // }
 
     return qimage;
+}
+
+void SimpleWindow::setBrushSize(int newSize){
+    brush->setSize(newSize);
+}
+
+void SimpleWindow::update(){
+    st->focus(canvas.getImage());
+
+    qcanvas->setImage(canvas.getImage());
+    canvas.update();
+}
+
+void SimpleWindow::undo(){
+    canvas.undo();
+}
+
+void SimpleWindow::redo(){
+    canvas.redo();
+}
+
+void SimpleWindow::changeColor(QColor color){
+    // qDebug() << color.red() << " " << fd.getBrush().getColor().val;
+    int r, g, b;
+    color.getRgb(&r, &g, &b);
+    brush->setColor(cv::Scalar(b,g,r));
+}
+
+void SimpleWindow::changeTool(bool clicked){
+
+    if(!clicked){
+        QPushButton *buttonWidget = qobject_cast<QPushButton*>(sender());
+        if (!buttonWidget)
+            return;
+
+        if(buttonWidget->text().toStdString() == "Free"){
+            st = &fd;
+
+            //qDebug() << buttonWidget ->text();
+        } else if(buttonWidget->text().toStdString() == "Rect"){
+            st = &rd;
+        }else if(buttonWidget->text().toStdString() == "Circle"){
+            st = &cl;
+        } else if (buttonWidget->text().toStdString() == "Line"){
+            st = &lt;
+        }
+
+        // qDebug() << buttonWidget ->text() << " " << fdBtn->text();
+    }
+
+}
+
+void SimpleWindow::onMousePressedPaint(QPoint event) {
+    st->updateTool(event.x(), event.y());
+    // qDebug() << "Mouse Pressed at:" << st->getBrush().getMouse().x << " , " << st->getBrush().getMouse().y;
+
+}
+
+void SimpleWindow::onMouseMovedPaint(QPoint event) {
+    // qDebug() << "Mouse Moved to:" << event->pos();
+    st->updateDraw(canvas.getDrawImage(), event.x(), event.y());
+}
+
+void SimpleWindow::onMouseReleasedPaint(QPoint event) {
+    // qDebug() << "Mouse Released at:" << event->pos();
+    canvas.addToHistory(st->draw(canvas.getDrawImage(), event.x(), event.y()));
+    st->updateTool(-1, -1);
+}
+
+void SimpleWindow::newFile(){
+
+    NewDialog dialog(this);
+    if (dialog.exec() == QDialog::Accepted) {
+        int width = dialog.getWidth();
+        int height = dialog.getHeight();
+        // qDebug() << "User selected width:" << width << "height:" << height;
+        canvas = Canvas(height, width, cv::Scalar(255, 255, 255));
+    }
+    //If dialog is closed / not accepted didn't do it
+
+}
+
+void SimpleWindow::saveFile(){
+    //dialog where to save
+
+    if(fileName.isNull()) {
+        QFileDialog dialog(this);
+        dialog.setAcceptMode(QFileDialog::AcceptSave);
+        dialog.setNameFilters({"PNG Images (*.png)", "JPG Images (*.jpg)", "XMP Images (*.xpm)"});
+
+        if (dialog.exec() == QDialog::Accepted) {
+            fileName = dialog.selectedFiles().first();  // Get the chosen file path
+            QString selectedFilter = dialog.selectedNameFilter();  // Get the selected file type
+
+            if (!fileName.endsWith(".png", Qt::CaseInsensitive) &&
+                !fileName.endsWith(".jpg", Qt::CaseInsensitive) &&
+                !fileName.endsWith(".xpm", Qt::CaseInsensitive)) {
+
+                if (selectedFilter.contains("*.png")) {
+                    fileName += ".png";
+                } else if (selectedFilter.contains("*.jpg")) {
+                    fileName += ".jpg";
+                } else if (selectedFilter.contains("*.xpm")) {
+                    fileName += ".xpm";
+                }
+            }
+
+            // qDebug() << "Saving to:" << fileName;
+            imwrite(fileName.toStdString(), canvas.getImage());
+
+            fileLabel->setText(fileName);
+        }
+
+    }else {
+        imwrite(fileName.toStdString(), canvas.getImage());
+    }
+
+}
+
+void SimpleWindow::saveAsFile(){
+
+    QFileDialog dialog(this);
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+    dialog.setNameFilters({"PNG Images (*.png)", "JPG Images (*.jpg)", "XMP Images (*.xpm)"});
+
+    if (dialog.exec() == QDialog::Accepted) {
+        fileName = dialog.selectedFiles().first();  // Get the chosen file path
+        QString selectedFilter = dialog.selectedNameFilter();  // Get the selected file type
+
+        if (!fileName.endsWith(".png", Qt::CaseInsensitive) &&
+            !fileName.endsWith(".jpg", Qt::CaseInsensitive) &&
+            !fileName.endsWith(".xpm", Qt::CaseInsensitive)) {
+
+            if (selectedFilter.contains("*.png")) {
+                fileName += ".png";
+            } else if (selectedFilter.contains("*.jpg")) {
+                fileName += ".jpg";
+            } else if (selectedFilter.contains("*.xpm")) {
+                fileName += ".xpm";
+            }
+        }
+
+        // qDebug() << "Saving to:" << fileName;
+        imwrite(fileName.toStdString(), canvas.getImage());
+
+        fileLabel->setText(fileName);
+    }
+
+}
+
+void SimpleWindow::openFile(){
+
+    QFileDialog dialog(this);
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setNameFilters({"PNG Images (*.png)", "JPG Images (*.jpg)", "XMP Images (*.xpm)"});
+
+    if (dialog.exec() == QDialog::Accepted) {
+        fileName = dialog.selectedFiles().first();  // Get the chosen file path
+        QString selectedFilter = dialog.selectedNameFilter();  // Get the selected file type
+
+        //For now checks what the file ends with
+        if (fileName.endsWith(".png", Qt::CaseInsensitive) ||
+            fileName.endsWith(".jpg", Qt::CaseInsensitive) ||
+            fileName.endsWith(".xpm", Qt::CaseInsensitive)) {
+
+
+            // qDebug() << "Opening from:" << fileName;
+            cv::Mat oImg = cv::imread(fileName.toStdString());
+            canvas = Canvas(oImg);
+
+            fileLabel->setText(fileName);
+        }
+
+
+    }
+
+}
+
+
+
+void SimpleWindow::exitWindow(){
+    this->close();
 }

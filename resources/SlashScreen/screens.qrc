@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/SlashScreen">
+        <file>phoe_load4.png</file>
+        <file>phoe_load3.jpg</file>
+        <file>phoe_load2.jpg</file>
+        <file>phoe_load.jpeg</file>
+    </qresource>
+</RCC>

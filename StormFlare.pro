@@ -2,6 +2,7 @@ QT += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+TARGET = StormFlare
 TEMPLATE = app
 CONFIG += console c++17
 # CONFIG -= app_bundle
@@ -119,7 +120,10 @@ FORMS += \
     $$PWD/src/QtColorWidgets/color_palette_widget.ui
 
 RESOURCES += \
-    $$PWD/resources/QtColorWidgets/color_widgets.qrc
+    $$PWD/resources/QtColorWidgets/color_widgets.qrc \
+    $$PWD/resources/Logo/logo.qrc \
+    $$PWD/resources/SlashScreen/screens.qrc \
+    $$PWD/resources/icons/icons.qrc
 
 
 # Default rules for deployment.

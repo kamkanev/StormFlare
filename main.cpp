@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     // Load the splash screen image
-    QPixmap loadImage("resources/SlashScreen/phoe_load4.png");  // Use a resource file or absolute path
+    QPixmap loadImage(":/SlashScreen/phoe_load4.png");  // Use a resource file or absolute path
     // QPixmap splashImage = loadImage.scaled(600, 600);
     QSplashScreen splash(loadImage.scaled(512, 512));
     splash.setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);

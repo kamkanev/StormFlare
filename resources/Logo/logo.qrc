@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/Logo">
+        <file>logo2STORMFLARE.png</file>
+        <file>StormflareLogo.png</file>
+    </qresource>
+</RCC>

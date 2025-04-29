@@ -92,187 +92,33 @@ private:
     QLabel* fileLabel = new QLabel();
 
 private slots:
-    void update(){
-        st->focus(canvas.getImage());
+    void setBrushSize(int);
 
-        qcanvas->setImage(canvas.getImage());
-        canvas.update();
-    }
+    void update();
 
-    void undo(){
-        canvas.undo();
-    }
+    void undo();
 
-    void redo(){
-        canvas.redo();
-    }
+    void redo();
 
-    void setBrushSize(int newSize){
-        brush->setSize(newSize);
-    }
+    void changeColor(QColor color);
 
-    void changeColor(QColor color){
-        // qDebug() << color.red() << " " << fd.getBrush().getColor().val;
-        int r, g, b;
-        color.getRgb(&r, &g, &b);
-        brush->setColor(cv::Scalar(b,g,r));
-    }
+    void changeTool(bool clicked);
 
-    void changeTool(bool clicked){
+    void onMousePressedPaint(QPoint event);
 
-        if(!clicked){
-            QPushButton *buttonWidget = qobject_cast<QPushButton*>(sender());
-            if (!buttonWidget)
-                return;
+    void onMouseMovedPaint(QPoint event);
 
-            if(buttonWidget->text().toStdString() == "Free"){
-                st = &fd;
+    void onMouseReleasedPaint(QPoint event);
 
-                //qDebug() << buttonWidget ->text();
-            } else if(buttonWidget->text().toStdString() == "Rect"){
-                st = &rd;
-            }else if(buttonWidget->text().toStdString() == "Circle"){
-                st = &cl;
-            } else if (buttonWidget->text().toStdString() == "Line"){
-                st = &lt;
-            }
+    void newFile();
 
-            // qDebug() << buttonWidget ->text() << " " << fdBtn->text();
-        }
+    void saveFile();
 
-    }
+    void saveAsFile();
 
-    void onMousePressedPaint(QPoint event) {
-        st->updateTool(event.x(), event.y());
-        // qDebug() << "Mouse Pressed at:" << st->getBrush().getMouse().x << " , " << st->getBrush().getMouse().y;
+    void openFile();
 
-    }
-
-    void onMouseMovedPaint(QPoint event) {
-        // qDebug() << "Mouse Moved to:" << event->pos();
-        st->updateDraw(canvas.getDrawImage(), event.x(), event.y());
-    }
-
-    void onMouseReleasedPaint(QPoint event) {
-        // qDebug() << "Mouse Released at:" << event->pos();
-        canvas.addToHistory(st->draw(canvas.getDrawImage(), event.x(), event.y()));
-        st->updateTool(-1, -1);
-    }
-
-    void newFile(){
-
-        NewDialog dialog(this);
-        if (dialog.exec() == QDialog::Accepted) {
-            int width = dialog.getWidth();
-            int height = dialog.getHeight();
-            qDebug() << "User selected width:" << width << "height:" << height;
-            canvas = Canvas(height, width, cv::Scalar(255, 255, 255));
-        }
-        //If dialog is closed / not accepted didn't do it
-
-    }
-
-    void saveFile(){
-        //dialog where to save
-
-        if(fileName.isNull()) {
-            QFileDialog dialog(this);
-            dialog.setAcceptMode(QFileDialog::AcceptSave);
-            dialog.setNameFilters({"PNG Images (*.png)", "JPG Images (*.jpg)", "XMP Images (*.xpm)"});
-
-            if (dialog.exec() == QDialog::Accepted) {
-                fileName = dialog.selectedFiles().first();  // Get the chosen file path
-                QString selectedFilter = dialog.selectedNameFilter();  // Get the selected file type
-
-                if (!fileName.endsWith(".png", Qt::CaseInsensitive) &&
-                    !fileName.endsWith(".jpg", Qt::CaseInsensitive) &&
-                    !fileName.endsWith(".xpm", Qt::CaseInsensitive)) {
-
-                    if (selectedFilter.contains("*.png")) {
-                        fileName += ".png";
-                    } else if (selectedFilter.contains("*.jpg")) {
-                        fileName += ".jpg";
-                    } else if (selectedFilter.contains("*.xpm")) {
-                        fileName += ".xpm";
-                    }
-                }
-
-                // qDebug() << "Saving to:" << fileName;
-                imwrite(fileName.toStdString(), canvas.getImage());
-
-                fileLabel->setText(fileName);
-            }
-
-        }else {
-            imwrite(fileName.toStdString(), canvas.getImage());
-        }
-
-    }
-
-    void saveAsFile(){
-
-        QFileDialog dialog(this);
-        dialog.setAcceptMode(QFileDialog::AcceptSave);
-        dialog.setNameFilters({"PNG Images (*.png)", "JPG Images (*.jpg)", "XMP Images (*.xpm)"});
-
-        if (dialog.exec() == QDialog::Accepted) {
-            fileName = dialog.selectedFiles().first();  // Get the chosen file path
-            QString selectedFilter = dialog.selectedNameFilter();  // Get the selected file type
-
-            if (!fileName.endsWith(".png", Qt::CaseInsensitive) &&
-                !fileName.endsWith(".jpg", Qt::CaseInsensitive) &&
-                !fileName.endsWith(".xpm", Qt::CaseInsensitive)) {
-
-                if (selectedFilter.contains("*.png")) {
-                    fileName += ".png";
-                } else if (selectedFilter.contains("*.jpg")) {
-                    fileName += ".jpg";
-                } else if (selectedFilter.contains("*.xpm")) {
-                    fileName += ".xpm";
-                }
-            }
-
-            // qDebug() << "Saving to:" << fileName;
-            imwrite(fileName.toStdString(), canvas.getImage());
-
-            fileLabel->setText(fileName);
-        }
-
-    }
-
-    void openFile(){
-
-        QFileDialog dialog(this);
-        dialog.setAcceptMode(QFileDialog::AcceptOpen);
-        dialog.setNameFilters({"PNG Images (*.png)", "JPG Images (*.jpg)", "XMP Images (*.xpm)"});
-
-        if (dialog.exec() == QDialog::Accepted) {
-            fileName = dialog.selectedFiles().first();  // Get the chosen file path
-            QString selectedFilter = dialog.selectedNameFilter();  // Get the selected file type
-
-            //For now checks what the file ends with
-            if (fileName.endsWith(".png", Qt::CaseInsensitive) ||
-                fileName.endsWith(".jpg", Qt::CaseInsensitive) ||
-                fileName.endsWith(".xpm", Qt::CaseInsensitive)) {
-
-
-                // qDebug() << "Opening from:" << fileName;
-                cv::Mat oImg = cv::imread(fileName.toStdString());
-                canvas = Canvas(oImg);
-
-                fileLabel->setText(fileName);
-            }
-
-
-        }
-
-    }
-
-
-
-    void exitWindow(){
-        this->close();
-    }
+    void exitWindow();
 };
 
 #endif // SIMPLEWINDOW_H
